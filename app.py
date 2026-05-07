@@ -1,8 +1,8 @@
 import streamlit as st
 import os
-from huggingface_hub import InferenceClient
+from groq import Groq
 
-client = InferenceClient(token=os.environ.get("HF_TOKEN"))
+client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
 st.set_page_config(page_title="Chat Upgrade App", page_icon="💬")
 st.title("💬 Chat Upgrade App")
@@ -27,7 +27,7 @@ if st.button("✨ Upgrade My Message"):
     if user_message.strip():
         with st.spinner("AI is upgrading your message..."):
             response = client.chat.completions.create(
-                model="HuggingFaceH4/zephyr-7b-beta",
+                model="llama3-8b-8192",
                 messages=[
                     {"role": "system", "content": tones[mode]},
                     {"role": "user", "content": user_message}
