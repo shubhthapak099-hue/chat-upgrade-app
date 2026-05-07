@@ -49,10 +49,6 @@ if st.button("Upgrade My Message"):
                 result = response.json()
                 if "choices" in result:
     answer = result["choices"][0]["message"]["content"]
-    st.markdown("---")
-    st.subheader("Your Upgraded Messages:")
-    st.write(answer)
-    st.info("Copy your favourite and paste it in your chat!")
 else:
     st.error("Groq said: " + str(result))
                 st.markdown("---")
