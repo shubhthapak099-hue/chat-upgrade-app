@@ -10,7 +10,7 @@ st.write("Type any message — get an upgraded version instantly")
 st.markdown("---")
 
 mode = st.radio("Who are you talking to?",
-["❤️ Love Mode", "👨‍👩‍👧 Family Mode", "👫 Friends Mode"],
+["Love Mode", "Family Mode", "Friends Mode"],
 horizontal=True)
 
 user_message = st.text_area("Type your message here:",
@@ -18,15 +18,16 @@ placeholder="Example: good morning, i miss you, how are you",
 height=120)
 
 tones = {
-"❤️ Love Mode": "romantic and loving",
-"👨‍👩‍👧 Family Mode": "warm caring and family appropriate",
-"👫 Friends Mode": "fun casual and friendly"
+"Love Mode": "romantic and loving",
+"Family Mode": "warm caring and family appropriate",
+"Friends Mode": "fun casual and friendly"
 }
 
-if st.button("✨ Upgrade My Message"):
+if st.button("Upgrade My Message"):
     if user_message.strip():
-        with st.spinner("AI is upgrading your message..."):
-            prompt = f"Rewrite this message in a {tones[mode]} tone. Give 3 short versions numbered 1, 2, 3. Message: {user_message}"
+        with st.spinner("Upgrading your message..."):
+            tone = tones[mode]
+            prompt = "Rewrite this message in a " + tone + " tone. Give 3 short versions numbered 1, 2, 3. Message: " + user_message
             response = client.chat.completions.create(
                 model="llama3-8b-8192",
                 messages=[
@@ -36,8 +37,8 @@ if st.button("✨ Upgrade My Message"):
             )
             result = response.choices[0].message.content
             st.markdown("---")
-            st.subheader("✅ Your Upgraded Messages:")
-            st.markdown(result)
+            st.subheader("Your Upgraded Messages:")
+            st.write(result)
             st.info("Copy your favourite and paste it in your chat!")
     else:
         st.warning("Please type a message first!")
