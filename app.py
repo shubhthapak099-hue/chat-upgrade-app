@@ -1,9 +1,8 @@
 import streamlit as st
-import google.generativeai as genai
 import os
+from huggingface_hub import InferenceClient
 
-genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
-model = genai.GenerativeModel("gemini-2.0-flash")
+client = InferenceClient(token=os.environ.get("HF_TOKEN"))
 
 st.set_page_config(page_title="Chat Upgrade App", page_icon="💬")
 st.title("💬 Chat Upgrade App")
@@ -19,20 +18,26 @@ placeholder="Example: good morning, i miss you, how are you",
 height=120)
 
 tones = {
-"❤️ Love Mode": "Rewrite this as a deeply romantic and loving text message. Give 3 short versions.",
-"👨‍👩‍👧 Family Mode": "Rewrite this as a warm, caring and respectful family message. Give 3 short versions.",
-"👫 Friends Mode": "Rewrite this as a fun, casual and witty message to a best friend. Give 3 short versions."
+"❤️ Love Mode": "Rewrite this as a deeply romantic and loving text message. Give 3 short versions. Only return the 3 versions nothing else.",
+"👨‍👩‍👧 Family Mode": "Rewrite this as a warm caring and respectful family message. Give 3 short versions. Only return the 3 versions nothing else.",
+"👫 Friends Mode": "Rewrite this as a fun casual and witty message to a best friend. Give 3 short versions. Only return the 3 versions nothing else."
 }
 
 if st.button("✨ Upgrade My Message"):
     if user_message.strip():
         with st.spinner("AI is upgrading your message..."):
-            response = model.generate_content(
-                f"{tones[mode]}\n\nOriginal message: {user_message}"
+            response = client.chat.completions.create(
+                model="mistralai/Mixtral-8x7B-Instruct-v0.1",
+                messages=[
+                    {"role": "system", "content": tones[mode]},
+                    {"role": "user", "content": user_message}
+                ],
+                max_tokens=300
             )
+            result = response.choices[0].message.content
             st.markdown("---")
             st.subheader("✅ Your Upgraded Messages:")
-            st.markdown(response.text)
+            st.markdown(result)
             st.info("Copy your favourite and paste it in your chat!")
     else:
         st.warning("Please type a message first!")
