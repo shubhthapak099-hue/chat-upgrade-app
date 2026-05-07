@@ -26,36 +26,33 @@ tones = {
 if st.button("Upgrade My Message"):
     if user_message.strip():
         with st.spinner("Upgrading your message..."):
-            try:
-                headers = {
-                    "Authorization": "Bearer " + api_key,
-                    "Content-Type": "application/json"
-                }
-                data = {
-                    "model": "llama3-8b-8192",
-                    "messages": [
-                        {
-                            "role": "user",
-                            "content": "Rewrite this message in a " + tones[mode] + " tone. Give 3 short versions numbered 1, 2, 3. Message: " + user_message
-                        }
-                    ],
-                    "max_tokens": 300
-                }
-                response = requests.post(
-                    "https://api.groq.com/openai/v1/chat/completions",
-                    headers=headers,
-                    json=data
-                )
-                result = response.json()
-                if "choices" in result:
-    answer = result["choices"][0]["message"]["content"]
-else:
-    st.error("Groq said: " + str(result))
+            headers = {
+                "Authorization": "Bearer " + api_key,
+                "Content-Type": "application/json"
+            }
+            data = {
+                "model": "llama3-8b-8192",
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": "Rewrite this message in a " + tones[mode] + " tone. Give 3 short versions numbered 1, 2, 3. Message: " + user_message
+                    }
+                ],
+                "max_tokens": 300
+            }
+            response = requests.post(
+                "https://api.groq.com/openai/v1/chat/completions",
+                headers=headers,
+                json=data
+            )
+            result = response.json()
+            if "choices" in result:
+                answer = result["choices"][0]["message"]["content"]
                 st.markdown("---")
                 st.subheader("Your Upgraded Messages:")
                 st.write(answer)
                 st.info("Copy your favourite and paste it in your chat!")
-            except Exception as e:
-                st.error("Something went wrong. Error: " + str(e))
+            else:
+                st.error("Groq said: " + str(result))
     else:
         st.warning("Please type a message first!")
