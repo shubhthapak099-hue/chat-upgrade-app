@@ -27,7 +27,7 @@ if st.button("✨ Upgrade My Message"):
     if user_message.strip():
         with st.spinner("AI is upgrading your message..."):
             response = client.chat.completions.create(
-                model="mistralai/Mixtral-8x7B-Instruct-v0.1",
+                model="HuggingFaceH4/zephyr-7b-beta",
                 messages=[
                     {"role": "system", "content": tones[mode]},
                     {"role": "user", "content": user_message}
